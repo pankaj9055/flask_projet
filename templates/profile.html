@@ -77,7 +77,7 @@
                         <div class="referral-info">
                             <div class="referral-stats">
                                 <div class="stat-card">
-                                    <div class="stat-number">{{ referrals|length }}</div>
+                                    <div class="stat-number">{{ user.get_referrals_count() }}</div>
                                     <div class="stat-text">Total Referrals</div>
                                 </div>
                                 <div class="stat-card">
@@ -106,10 +106,10 @@
                                 </div>
                             </div>
                             
-                            {% if referrals %}
+                            {% if user.referrals %}
                             <div class="referral-list">
                                 <h5>Your Referrals:</h5>
-                                {% for referral in referrals %}
+                                {% for referral in user.referrals %}
                                 <div class="referral-item">
                                     <div class="referral-info">
                                         <strong>{{ referral.name }}</strong>

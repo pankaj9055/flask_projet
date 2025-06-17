@@ -100,7 +100,7 @@
                         <div class="referral-stats">
                             <div class="stat-row">
                                 <span>Your Referrals:</span>
-                                <span class="text-neon">{{ user.referrals|length }}</span>
+                                <span class="text-neon">{{ user.get_referrals_count() }}</span>
                             </div>
                             <div class="stat-row">
                                 <span>Today's Bonus:</span>

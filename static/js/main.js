@@ -73,14 +73,14 @@
         document.head.appendChild(style);
     }
 
-    // Particle Effects
+    // Particle Effects - Optimized for performance
     function initParticleEffects() {
         const hero = document.querySelector('.hero-section');
         if (!hero) return;
 
-        // Create floating particles
-        for (let i = 0; i < 20; i++) {
-            createFloatingParticle(hero);
+        // Reduced particle count for better performance
+        for (let i = 0; i < 8; i++) {
+            setTimeout(() => createFloatingParticle(hero), i * 200);
         }
     }
 
