@@ -197,6 +197,9 @@ def upgrade_plan():
             filename = f"{uuid.uuid4()}{file_ext}"
             screenshot_path = os.path.join(upload_dir, filename)
             file.save(screenshot_path)
+            
+            # Store relative path for template rendering
+            screenshot_path = f"uploads/{filename}"
     
     # Create deposit record
     deposit = Deposit(
