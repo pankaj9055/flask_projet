@@ -18,40 +18,56 @@ def register():
     try:
         data = request.form
         
-        # Validate input
-        if not all([data.get('name'), data.get('email'), data.get('password'), data.get('country')]):
-            flash('All fields are required', 'error')
+        # Validate input with better error messages
+        if not data.get('name') or len(data.get('name', '').strip()) < 2:
+            flash('Name must be at least 2 characters long', 'error')
+            return redirect(url_for('auth'))
+            
+        if not data.get('email') or '@' not in data.get('email', ''):
+            flash('Please enter a valid email address', 'error')
+            return redirect(url_for('auth'))
+            
+        if not data.get('password') or len(data.get('password', '')) < 6:
+            flash('Password must be at least 6 characters long', 'error')
+            return redirect(url_for('auth'))
+            
+        if not data.get('country'):
+            flash('Please select your country', 'error')
             return redirect(url_for('auth'))
         
         # Check if user exists
-        existing_user = User.query.filter_by(email=data['email']).first()
+        existing_user = User.query.filter_by(email=data['email'].lower()).first()
         if existing_user:
-            flash('Email already registered', 'error')
+            flash('Email already registered. Please login instead.', 'error')
             return redirect(url_for('auth'))
         
-        # Create new user
+        # Create new user with error handling
         user = User(
-            name=data['name'],
-            email=data['email'],
+            name=data['name'].strip(),
+            email=data['email'].lower().strip(),
             country=data['country']
         )
         user.set_password(data['password'])
         
-        # Handle referral
+        # Handle referral with validation
         if data.get('referral_code'):
-            referrer = User.query.filter_by(referral_code=data['referral_code']).first()
+            referral_code = data['referral_code'].strip().upper()
+            referrer = User.query.filter_by(referral_code=referral_code).first()
             if referrer:
                 user.referred_by = referrer.id
+            else:
+                flash('Invalid referral code, but registration continues', 'warning')
         
         db.session.add(user)
         db.session.commit()
         
         session['user_id'] = user.id
-        flash('Registration successful!', 'success')
+        flash('Registration successful! Welcome to Oxin!', 'success')
         return redirect(url_for('mining'))
         
     except Exception as e:
-        flash(f'Registration failed: {str(e)}', 'error')
+        db.session.rollback()
+        flash('Registration failed. Please try again.', 'error')
         return redirect(url_for('auth'))
 
 @app.route('/login', methods=['POST'])
@@ -59,17 +75,29 @@ def login():
     try:
         data = request.form
         
-        user = User.query.filter_by(email=data['email']).first()
+        # Input validation
+        if not data.get('email') or not data.get('password'):
+            flash('Email and password are required', 'error')
+            return redirect(url_for('auth'))
+        
+        # Normalize email for lookup
+        email = data['email'].lower().strip()
+        user = User.query.filter_by(email=email).first()
+        
         if user and user.check_password(data['password']):
+            if not user.is_active:
+                flash('Account is disabled. Contact support.', 'error')
+                return redirect(url_for('auth'))
+                
             session['user_id'] = user.id
-            flash('Login successful!', 'success')
+            flash('Login successful! Welcome back!', 'success')
             return redirect(url_for('mining'))
         else:
             flash('Invalid email or password', 'error')
             return redirect(url_for('auth'))
             
     except Exception as e:
-        flash(f'Login failed: {str(e)}', 'error')
+        flash('Login failed. Please try again.', 'error')
         return redirect(url_for('auth'))
 
 @app.route('/logout')

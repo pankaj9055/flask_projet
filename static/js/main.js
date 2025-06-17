@@ -143,7 +143,7 @@
             
             inputs.forEach(input => {
                 input.addEventListener('blur', validateInput);
-                input.addEventListener('input', clearValidation);
+                input.addEventListener('input', debounce(clearValidation, 300));
             });
             
             form.addEventListener('submit', function(e) {
@@ -338,7 +338,7 @@
         });
     }
 
-    // Countdown Timer
+    // Countdown Timer - Optimized
     function initCountdownTimer() {
         const countdownElements = {
             days: document.getElementById('days'),
@@ -347,8 +347,9 @@
             seconds: document.getElementById('seconds')
         };
 
-        // Check if all elements exist
-        if (!Object.values(countdownElements).every(el => el)) {
+        // Safe check for elements existence
+        const validElements = Object.values(countdownElements).filter(el => el !== null);
+        if (validElements.length === 0) {
             return;
         }
 
