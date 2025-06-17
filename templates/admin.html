@@ -353,7 +353,7 @@
                                         <td>{{ deposit.created_at.strftime('%m-%d %H:%M') }}</td>
                                         <td>
                                             {% if deposit.screenshot_path %}
-                                            <button class="btn btn-sm btn-info" onclick="viewScreenshot('{{ url_for('static', filename=deposit.screenshot_path.replace('static/', '')) }}')">
+                                            <button class="btn btn-sm btn-info" onclick="viewScreenshot('{{ url_for('static', filename=deposit.screenshot_path) }}')">
                                                 <i class="fas fa-image"></i> View
                                             </button>
                                             {% else %}

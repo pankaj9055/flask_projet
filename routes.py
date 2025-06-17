@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, session, flash, jsonify
+from flask import render_template, request, redirect, url_for, session, flash, jsonify, send_from_directory
 from app import app, db
 from models import User, MiningSession, Deposit, AdminUser, Announcement, PaymentSettings
 from werkzeug.security import generate_password_hash
@@ -291,9 +291,10 @@ def approve_deposit(deposit_id):
     
     # Update user plan
     user = deposit.user
+    payment_settings = PaymentSettings.get_settings()
     user.plan_type = 'paid'
     user.plan_amount = deposit.amount
-    user.daily_reward = deposit.amount * 1.2  # 1.2x multiplier
+    user.daily_reward = deposit.amount * payment_settings.reward_multiplier
     
     db.session.commit()
     flash('Deposit approved successfully', 'success')
@@ -325,9 +326,10 @@ def admin_upgrade_user(user_id):
         user = User.query.get_or_404(user_id)
         
         # Set default paid plan values
+        payment_settings = PaymentSettings.get_settings()
         user.plan_type = 'paid'
         user.plan_amount = 50.0  # Default upgrade amount
-        user.daily_reward = 60.0  # 50 * 1.2
+        user.daily_reward = 50.0 * payment_settings.reward_multiplier
         
         db.session.commit()
         flash(f'User {user.name} upgraded to paid plan successfully!', 'success')
@@ -360,13 +362,7 @@ def admin_downgrade_user(user_id):
     
     return redirect(url_for('admin_dashboard'))
 
-@app.route('/admin/payment_settings')
-def admin_payment_settings():
-    if 'admin_id' not in session:
-        return redirect(url_for('admin_login'))
-    
-    settings = PaymentSettings.get_settings()
-    return render_template('admin_payment_settings.html', settings=settings)
+# Removed problematic payment settings route - functionality is now in admin dashboard
 
 @app.route('/admin/update_payment_settings', methods=['POST'])
 def admin_update_payment_settings():
@@ -391,7 +387,7 @@ def admin_update_payment_settings():
         db.session.rollback()
         flash('Failed to update payment settings', 'error')
     
-    return redirect(url_for('admin_payment_settings'))
+    return redirect(url_for('admin_dashboard'))
 
 @app.route('/admin/edit_user_plan/<int:user_id>', methods=['POST'])
 def admin_edit_user_plan(user_id):
@@ -498,3 +494,7 @@ def format_seconds(seconds):
     seconds = seconds % 60
     
     return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory('static/uploads', filename)

@@ -2060,6 +2060,21 @@ h1, h2, h3, h4, h5, h6 {
     display: block;
     margin-bottom: 10px;
     font-weight: 600;
+    color: #00ffff;
+}
+
+.qr-preview .qr-image,
+.current-qr-preview .qr-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 5px;
+    object-fit: contain;
+}
+
+.admin-section .form-control:focus,
+.admin-section .form-select:focus {
+    border-color: #00ffff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 255, 255, 0.25);
 }
 
 /* Enhanced form styles */
