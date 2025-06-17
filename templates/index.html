@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Putting Your Money in 
+                        <span class="gradient-text">Product Backed Projects</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        The future of cryptocurrency mining starts here. Join Oxin and be part of the next generation of digital finance.
+                    </p>
+                    <div class="hero-buttons">
+                        {% if session.user_id %}
+                            <a href="{{ url_for('mining') }}" class="btn btn-neon me-3">Start Mining</a>
+                        {% else %}
+                            <a href="{{ url_for('auth') }}" class="btn btn-neon me-3">Purchase Token</a>
+                        {% endif %}
+                        <a href="#features" class="btn btn-outline-neon">Read Documents</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image">
+                    <div class="rocket-container">
+                        <img src="{{ url_for('static', filename='images/rocket.svg') }}" alt="Rocket" class="rocket-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Elements -->
+    <div class="floating-elements">
+        <div class="floating-element" style="top: 20%; left: 10%;">
+            <i class="fas fa-coins"></i>
+        </div>
+        <div class="floating-element" style="top: 60%; right: 15%;">
+            <i class="fas fa-rocket"></i>
+        </div>
+        <div class="floating-element" style="bottom: 30%; left: 20%;">
+            <i class="fas fa-gem"></i>
+        </div>
+    </div>
+</section>
+
+<!-- ICO Countdown Section -->
+<section class="countdown-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="countdown-card">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <h3 class="countdown-title">ICO will start in..</h3>
+                            <p class="countdown-subtitle">
+                                Value of technology invested: <span class="text-neon">7.75 Min</span><br>
+                                Private sale: <span class="text-neon">1.5 Min</span><br>
+                                ICO: <span class="text-neon">160,000 $ chosen</span>
+                            </p>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="countdown-timer">
+                                <div class="countdown-item">
+                                    <span class="countdown-number" id="days">146</span>
+                                    <span class="countdown-label">Days</span>
+                                </div>
+                                <div class="countdown-separator">:</div>
+                                <div class="countdown-item">
+                                    <span class="countdown-number" id="hours">22</span>
+                                    <span class="countdown-label">Hours</span>
+                                </div>
+                                <div class="countdown-separator">:</div>
+                                <div class="countdown-item">
+                                    <span class="countdown-number" id="minutes">53</span>
+                                    <span class="countdown-label">Minutes</span>
+                                </div>
+                                <div class="countdown-separator">:</div>
+                                <div class="countdown-item">
+                                    <span class="countdown-number" id="seconds">43</span>
+                                    <span class="countdown-label">Seconds</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Partners Section -->
+<section class="partners-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="partners-logos">
+                    <div class="partner-logo">
+                        <i class="fab fa-github"></i>
+                        <span>GitHub</span>
+                    </div>
+                    <div class="partner-logo">
+                        <i class="fab fa-discord"></i>
+                        <span>Discord</span>
+                    </div>
+                    <div class="partner-logo">
+                        <i class="fab fa-telegram"></i>
+                        <span>Telegram</span>
+                    </div>
+                    <div class="partner-logo">
+                        <i class="fab fa-twitter"></i>
+                        <span>Twitter</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="features-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        Why You Choose <span class="gradient-text">OXIN</span> is worth buying today?
+                    </h2>
+                    <p class="section-subtitle">
+                        Discover the revolutionary features that make Oxin the future of cryptocurrency mining and investment.
+                    </p>
+                </div>
+                
+                <div class="features-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Amount Invested</h4>
+                            <p>Track your investment growth with real-time analytics and transparent reporting.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Quantity Oxin</h4>
+                            <p>Earn daily rewards through our advanced mining algorithm and referral system.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Maximum Security</h4>
+                            <p>Bank-level security with multi-layer encryption and cold storage protection.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="features-visual">
+                    <div class="feature-cards">
+                        <div class="feature-card">
+                            <div class="card-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h5>The experienced value of your investment</h5>
+                            <div class="card-value">
+                                <span class="value-number">$12.5M</span>
+                                <span class="value-change">+15.8%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="card-icon">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                            <h5>Expected monthly dividend</h5>
+                            <div class="card-value">
+                                <span class="value-number">$2.1K</span>
+                                <span class="value-change">+12.3%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="card-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <h5>Maximum influence</h5>
+                            <div class="card-value">
+                                <span class="value-number">98.7%</span>
+                                <span class="value-change">+0.5%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="coins-visual">
+                        <img src="{{ url_for('static', filename='images/coins.svg') }}" alt="Coins" class="coins-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="about-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="about-visual">
+                    <div class="shield-container">
+                        <img src="{{ url_for('static', filename='images/shield.svg') }}" alt="Security Shield" class="shield-img">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-content">
+                    <h2 class="section-title">
+                        Introducing <span class="gradient-text">Oxin Crypto</span>
+                    </h2>
+                    <p class="section-subtitle">
+                        Oxin represents the next evolution in cryptocurrency mining and investment platforms.
+                    </p>
+                    
+                    <div class="about-features">
+                        <div class="about-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Why We Are</span>
+                        </div>
+                        <p>
+                            We are a team of blockchain enthusiasts and financial experts dedicated to making cryptocurrency mining accessible to everyone. Our platform combines cutting-edge technology with user-friendly interfaces.
+                        </p>
+                        
+                        <div class="about-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Our Mission</span>
+                        </div>
+                        <p>
+                            To democratize cryptocurrency mining and provide sustainable passive income opportunities through innovative blockchain technology and community-driven growth.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="footer-brand">
+                    <h3>OXIN</h3>
+                    <p>The future of cryptocurrency mining starts here.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="footer-links">
+                    <h5>Quick Links</h5>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#roadmap">Roadmap</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="{{ url_for('auth') }}">Login</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="footer-social">
+                    <h5>Follow Us</h5>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Oxin. All rights reserved. | Privacy Policy | Terms of Service</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Countdown Timer
+    function updateCountdown() {
+        const targetDate = new Date('2026-01-01T00:00:00Z').getTime();
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+        
+        if (distance < 0) {
+            document.getElementById('days').textContent = '00';
+            document.getElementById('hours').textContent = '00';
+            document.getElementById('minutes').textContent = '00';
+            document.getElementById('seconds').textContent = '00';
+            return;
+        }
+        
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        document.getElementById('days').textContent = days.toString().padStart(2, '0');
+        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+    }
+    
+    // Update countdown every second
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+</script>
+{% endblock %}

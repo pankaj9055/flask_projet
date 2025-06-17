@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - Oxin{% endblock %}
+
+{% block content %}
+{% if not admin_dashboard %}
+<!-- Admin Login -->
+<section class="admin-login-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-4">
+                <div class="admin-login-card">
+                    <div class="login-header">
+                        <h2>Admin Login</h2>
+                        <p>Access the Oxin administration panel</p>
+                    </div>
+                    <form method="POST" action="{{ url_for('admin_login_post') }}">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-neon w-100">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% else %}
+<!-- Admin Dashboard -->
+<section class="admin-dashboard">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="admin-sidebar">
+                    <div class="sidebar-header">
+                        <h3>Admin Panel</h3>
+                    </div>
+                    <div class="sidebar-menu">
+                        <a href="#dashboard" class="menu-item active" onclick="showSection('dashboard')">
+                            <i class="fas fa-tachometer-alt"></i>Dashboard
+                        </a>
+                        <a href="#users" class="menu-item" onclick="showSection('users')">
+                            <i class="fas fa-users"></i>Users
+                        </a>
+                        <a href="#deposits" class="menu-item" onclick="showSection('deposits')">
+                            <i class="fas fa-credit-card"></i>Deposits
+                        </a>
+                        <a href="{{ url_for('admin_logout') }}" class="menu-item">
+                            <i class="fas fa-sign-out-alt"></i>Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-9">
+                <div class="admin-content">
+                    <!-- Dashboard Section -->
+                    <div id="dashboard" class="admin-section">
+                        <div class="section-header">
+                            <h2>Dashboard Overview</h2>
+                        </div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3>{{ total_users }}</h3>
+                                    <p>Total Users</p>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3>{{ total_deposits }}</h3>
+                                    <p>Total Deposits</p>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3>{{ pending_deposits }}</h3>
+                                    <p>Pending Deposits</p>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-pickaxe"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3>{{ today_mining }}</h3>
+                                    <p>Today's Mining</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Users Section -->
+                    <div id="users" class="admin-section d-none">
+                        <div class="section-header">
+                            <h2>User Management</h2>
+                        </div>
+                        
+                        <div class="data-table">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Plan</th>
+                                        <th>Balance</th>
+                                        <th>Referrals</th>
+                                        <th>Status</th>
+                                        <th>Joined</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                    <tr>
+                                        <td>{{ user.id }}</td>
+                                        <td>{{ user.name }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>
+                                            <span class="plan-badge plan-{{ user.plan_type }}">
+                                                {{ user.plan_type.title() }}
+                                            </span>
+                                        </td>
+                                        <td>{{ "%.4f"|format(user.balance) }} OXC</td>
+                                        <td>{{ user.referrals|length }}</td>
+                                        <td>
+                                            {% if user.is_active %}
+                                                <span class="badge badge-success">Active</span>
+                                            {% else %}
+                                                <span class="badge badge-danger">Inactive</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Deposits Section -->
+                    <div id="deposits" class="admin-section d-none">
+                        <div class="section-header">
+                            <h2>Deposit Management</h2>
+                        </div>
+                        
+                        <div class="data-table">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>User</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for deposit in deposits %}
+                                    <tr>
+                                        <td>{{ deposit.id }}</td>
+                                        <td>{{ deposit.user.name }}</td>
+                                        <td>${{ deposit.amount }}</td>
+                                        <td>
+                                            {% if deposit.status == 'pending' %}
+                                                <span class="badge badge-warning">Pending</span>
+                                            {% elif deposit.status == 'approved' %}
+                                                <span class="badge badge-success">Approved</span>
+                                            {% else %}
+                                                <span class="badge badge-danger">Rejected</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ deposit.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>
+                                            {% if deposit.status == 'pending' %}
+                                                <a href="{{ url_for('approve_deposit', deposit_id=deposit.id) }}" 
+                                                   class="btn btn-sm btn-success">Approve</a>
+                                                <a href="{{ url_for('reject_deposit', deposit_id=deposit.id) }}" 
+                                                   class="btn btn-sm btn-danger">Reject</a>
+                                            {% else %}
+                                                <span class="text-muted">{{ deposit.status.title() }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function showSection(sectionId) {
+        // Hide all sections
+        document.querySelectorAll('.admin-section').forEach(section => {
+            section.classList.add('d-none');
+        });
+        
+        // Show selected section
+        document.getElementById(sectionId).classList.remove('d-none');
+        
+        // Update active menu item
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        event.target.classList.add('active');
+    }
+</script>
+{% endblock %}

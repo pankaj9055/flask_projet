@@ -1,0 +1,103 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="rocketGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="flamesGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ef4444;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#dc2626;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Rocket Body -->
+  <ellipse cx="150" cy="120" rx="35" ry="80" fill="url(#rocketGradient)" filter="url(#shadow)"/>
+  
+  <!-- Rocket Nose -->
+  <path d="M150 40 L120 120 L180 120 Z" fill="url(#rocketGradient)" opacity="0.9"/>
+  
+  <!-- Window -->
+  <circle cx="150" cy="90" r="15" fill="#1e293b" stroke="url(#rocketGradient)" stroke-width="2"/>
+  <circle cx="150" cy="90" r="10" fill="#0f172a" opacity="0.8"/>
+  <circle cx="145" cy="85" r="3" fill="#8b5cf6" opacity="0.6"/>
+  
+  <!-- Wings -->
+  <path d="M115 140 L100 180 L125 160 Z" fill="url(#rocketGradient)" opacity="0.8"/>
+  <path d="M185 140 L200 180 L175 160 Z" fill="url(#rocketGradient)" opacity="0.8"/>
+  
+  <!-- Engine -->
+  <rect x="130" y="190" width="40" height="20" fill="#1e293b" rx="5"/>
+  <rect x="135" y="195" width="30" height="10" fill="#374151" rx="3"/>
+  
+  <!-- Flames -->
+  <g opacity="0.9">
+    <path d="M140 210 L145 240 L150 220 L155 240 L160 210 L155 230 L150 250 L145 230 Z" 
+          fill="url(#flamesGradient)" filter="url(#glow)">
+      <animateTransform attributeName="transform" type="scale" 
+                        values="1,1;1.2,0.8;1,1" dur="0.5s" repeatCount="indefinite"/>
+    </path>
+    <path d="M135 210 L138 235 L142 215 L145 235 L148 210 L145 225 L142 245 L138 225 Z" 
+          fill="url(#flamesGradient)" opacity="0.7" filter="url(#glow)">
+      <animateTransform attributeName="transform" type="scale" 
+                        values="1,1;0.8,1.2;1,1" dur="0.7s" repeatCount="indefinite"/>
+    </path>
+    <path d="M152 210 L155 235 L158 215 L162 235 L165 210 L162 225 L158 245 L155 225 Z" 
+          fill="url(#flamesGradient)" opacity="0.7" filter="url(#glow)">
+      <animateTransform attributeName="transform" type="scale" 
+                        values="1,1;0.9,1.1;1,1" dur="0.6s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  
+  <!-- Decorative Elements -->
+  <rect x="125" y="130" width="50" height="3" fill="#8b5cf6" opacity="0.6" rx="1.5"/>
+  <rect x="125" y="140" width="50" height="3" fill="#3b82f6" opacity="0.6" rx="1.5"/>
+  <rect x="125" y="150" width="50" height="3" fill="#ec4899" opacity="0.6" rx="1.5"/>
+  
+  <!-- Star Particles -->
+  <g opacity="0.7">
+    <circle cx="80" cy="60" r="2" fill="#8b5cf6">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="220" cy="80" r="1.5" fill="#3b82f6">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="70" cy="140" r="1" fill="#ec4899">
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="1.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="230" cy="120" r="2" fill="#f59e0b">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2.2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Orbital Rings -->
+  <g opacity="0.3" stroke="url(#rocketGradient)" stroke-width="1" fill="none">
+    <ellipse cx="150" cy="150" rx="100" ry="40">
+      <animateTransform attributeName="transform" type="rotate" 
+                        values="0 150 150;360 150 150" dur="20s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="150" cy="150" rx="120" ry="50">
+      <animateTransform attributeName="transform" type="rotate" 
+                        values="360 150 150;0 150 150" dur="30s" repeatCount="indefinite"/>
+    </ellipse>
+  </g>
+  
+  <!-- Exhaust Trail -->
+  <g opacity="0.4">
+    <path d="M150 250 Q140 270 145 290 Q150 280 155 290 Q160 270 150 250" 
+          fill="url(#flamesGradient)" filter="url(#glow)">
+      <animate attributeName="opacity" values="0.2;0.6;0.2" dur="1s" repeatCount="indefinite"/>
+    </path>
+  </g>
+</svg>

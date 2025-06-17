@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Wallet - Oxin{% endblock %}
+
+{% block content %}
+<section class="wallet-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="wallet-dashboard">
+                    <div class="wallet-header">
+                        <h2 class="wallet-title">Your Wallet</h2>
+                        <div class="wallet-balance">
+                            <div class="balance-card">
+                                <div class="balance-icon">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <div class="balance-info">
+                                    <h3 class="balance-amount">{{ "%.4f"|format(user.balance) }}</h3>
+                                    <p class="balance-currency">OXC</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="wallet-actions">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="action-card">
+                                    <div class="action-icon">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <h4>Buy OXC</h4>
+                                    <p>Purchase OXC tokens directly</p>
+                                    <button class="btn btn-outline-neon w-100" disabled>
+                                        Coming Soon
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="action-card">
+                                    <div class="action-icon">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </div>
+                                    <h4>Sell OXC</h4>
+                                    <p>Convert your OXC to other currencies</p>
+                                    <button class="btn btn-outline-neon w-100" disabled>
+                                        Coming Soon
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="action-card">
+                                    <div class="action-icon">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </div>
+                                    <h4>Withdraw</h4>
+                                    <p>Withdraw OXC to external wallet</p>
+                                    <button class="btn btn-outline-neon w-100" disabled>
+                                        Coming Soon
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="wallet-info">
+                        <div class="info-card">
+                            <h4>Wallet Information</h4>
+                            <div class="info-row">
+                                <span>Total Balance:</span>
+                                <span class="text-neon">{{ "%.4f"|format(user.balance) }} OXC</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Available Balance:</span>
+                                <span class="text-neon">{{ "%.4f"|format(user.balance) }} OXC</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Locked Balance:</span>
+                                <span class="text-muted">0.0000 OXC</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Daily Mining Rate:</span>
+                                <span class="text-neon">{{ user.daily_reward }} OXC/Day</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ICO Countdown -->
+                    <div class="countdown-card">
+                        <div class="countdown-header">
+                            <h4>ICO Launch Countdown</h4>
+                            <p>Trading will be available after ICO launch</p>
+                        </div>
+                        <div class="countdown-timer">
+                            <div class="countdown-item">
+                                <span class="countdown-number" id="days">146</span>
+                                <span class="countdown-label">Days</span>
+                            </div>
+                            <div class="countdown-separator">:</div>
+                            <div class="countdown-item">
+                                <span class="countdown-number" id="hours">22</span>
+                                <span class="countdown-label">Hours</span>
+                            </div>
+                            <div class="countdown-separator">:</div>
+                            <div class="countdown-item">
+                                <span class="countdown-number" id="minutes">53</span>
+                                <span class="countdown-label">Minutes</span>
+                            </div>
+                            <div class="countdown-separator">:</div>
+                            <div class="countdown-item">
+                                <span class="countdown-number" id="seconds">43</span>
+                                <span class="countdown-label">Seconds</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Countdown Timer
+    function updateCountdown() {
+        const targetDate = new Date('2026-01-01T00:00:00Z').getTime();
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+        
+        if (distance < 0) {
+            document.getElementById('days').textContent = '00';
+            document.getElementById('hours').textContent = '00';
+            document.getElementById('minutes').textContent = '00';
+            document.getElementById('seconds').textContent = '00';
+            return;
+        }
+        
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        document.getElementById('days').textContent = days.toString().padStart(2, '0');
+        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+    }
+    
+    // Update countdown every second
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+</script>
+{% endblock %}

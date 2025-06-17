@@ -1,0 +1,167 @@
+<svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="coinGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#d97706;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#92400e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="coinGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#7c3aed;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5b21b6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="coinGradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#2563eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background Coin (Largest) -->
+  <g transform="translate(75,75)" filter="url(#shadow)">
+    <ellipse cx="0" cy="0" rx="35" ry="35" fill="url(#coinGradient1)" opacity="0.9">
+      <animateTransform attributeName="transform" type="rotate" 
+                        values="0;360" dur="8s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="0" cy="0" rx="30" ry="30" fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.8"/>
+    <ellipse cx="0" cy="0" rx="20" ry="20" fill="none" stroke="#f59e0b" stroke-width="1" opacity="0.6"/>
+    
+    <!-- OXC Text -->
+    <text x="0" y="5" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" 
+          font-size="12" font-weight="bold">OXC</text>
+    
+    <!-- Decorative Elements -->
+    <circle cx="-15" cy="-15" r="2" fill="#fbbf24" opacity="0.8"/>
+    <circle cx="15" cy="-15" r="2" fill="#fbbf24" opacity="0.8"/>
+    <circle cx="-15" cy="15" r="2" fill="#fbbf24" opacity="0.8"/>
+    <circle cx="15" cy="15" r="2" fill="#fbbf24" opacity="0.8"/>
+  </g>
+  
+  <!-- Middle Coin -->
+  <g transform="translate(45,45)" filter="url(#shadow)">
+    <ellipse cx="0" cy="0" rx="25" ry="25" fill="url(#coinGradient2)" opacity="0.85">
+      <animateTransform attributeName="transform" type="rotate" 
+                        values="360;0" dur="6s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="0" cy="0" rx="20" ry="20" fill="none" stroke="#a855f7" stroke-width="1.5" opacity="0.8"/>
+    <ellipse cx="0" cy="0" rx="12" ry="12" fill="none" stroke="#8b5cf6" stroke-width="1" opacity="0.6"/>
+    
+    <!-- Bitcoin Symbol -->
+    <text x="0" y="5" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" 
+          font-size="10" font-weight="bold">₿</text>
+    
+    <!-- Inner Pattern -->
+    <g opacity="0.6">
+      <line x1="-10" y1="0" x2="10" y2="0" stroke="#c084fc" stroke-width="1"/>
+      <line x1="0" y1="-10" x2="0" y2="10" stroke="#c084fc" stroke-width="1"/>
+    </g>
+  </g>
+  
+  <!-- Front Coin (Smallest) -->
+  <g transform="translate(105,105)" filter="url(#shadow)">
+    <ellipse cx="0" cy="0" rx="20" ry="20" fill="url(#coinGradient3)" opacity="0.9">
+      <animateTransform attributeName="transform" type="rotate" 
+                        values="0;360" dur="4s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="0" cy="0" rx="16" ry="16" fill="none" stroke="#60a5fa" stroke-width="1.5" opacity="0.8"/>
+    <ellipse cx="0" cy="0" rx="10" ry="10" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.6"/>
+    
+    <!-- Ethereum Symbol -->
+    <text x="0" y="5" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" 
+          font-size="8" font-weight="bold">Ξ</text>
+    
+    <!-- Corner Decorations -->
+    <circle cx="-8" cy="-8" r="1" fill="#60a5fa" opacity="0.8"/>
+    <circle cx="8" cy="-8" r="1" fill="#60a5fa" opacity="0.8"/>
+    <circle cx="-8" cy="8" r="1" fill="#60a5fa" opacity="0.8"/>
+    <circle cx="8" cy="8" r="1" fill="#60a5fa" opacity="0.8"/>
+  </g>
+  
+  <!-- Floating Particles -->
+  <g opacity="0.7">
+    <circle cx="20" cy="30" r="1.5" fill="#f59e0b">
+      <animate attributeName="cy" values="30;20;30" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="130" cy="40" r="1" fill="#8b5cf6">
+      <animate attributeName="cy" values="40;30;40" dur="2.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="25" cy="120" r="1.2" fill="#3b82f6">
+      <animate attributeName="cy" values="120;110;120" dur="2.8s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="2.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="125" cy="25" r="0.8" fill="#10b981">
+      <animate attributeName="cy" values="25;15;25" dur="3.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="3.2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Energy Trails -->
+  <g opacity="0.4" stroke-width="1" fill="none">
+    <path d="M20,70 Q40,50 60,70 Q80,90 100,70" stroke="url(#coinGradient1)">
+      <animate attributeName="stroke-dasharray" values="0,100;50,50;100,0;0,100" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <path d="M30,100 Q50,80 70,100 Q90,120 110,100" stroke="url(#coinGradient2)">
+      <animate attributeName="stroke-dasharray" values="100,0;50,50;0,100;100,0" dur="5s" repeatCount="indefinite"/>
+    </path>
+    <path d="M40,50 Q60,30 80,50 Q100,70 120,50" stroke="url(#coinGradient3)">
+      <animate attributeName="stroke-dasharray" values="0,100;25,75;100,0;0,100" dur="3s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  
+  <!-- Sparkle Effects -->
+  <g filter="url(#glow)">
+    <g opacity="0.8">
+      <path d="M60,20 L62,25 L67,23 L62,28 L60,33 L58,28 L53,23 L58,25 Z" fill="#fbbf24">
+        <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="rotate" 
+                          values="0 60 20;360 60 20" dur="4s" repeatCount="indefinite"/>
+      </path>
+    </g>
+    <g opacity="0.6">
+      <path d="M110,35 L111,38 L114,37 L111,40 L110,43 L109,40 L106,37 L109,38 Z" fill="#a855f7">
+        <animate attributeName="opacity" values="0;1;0" dur="1.5s" begin="0.5s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="rotate" 
+                          values="360 110 35;0 110 35" dur="3s" repeatCount="indefinite"/>
+      </path>
+    </g>
+    <g opacity="0.7">
+      <path d="M35,110 L36,113 L39,112 L36,115 L35,118 L34,115 L31,112 L34,113 Z" fill="#60a5fa">
+        <animate attributeName="opacity" values="0;1;0" dur="1.8s" begin="1s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="rotate" 
+                          values="0 35 110;360 35 110" dur="5s" repeatCount="indefinite"/>
+      </path>
+    </g>
+  </g>
+  
+  <!-- Value Indicators -->
+  <g opacity="0.3" font-family="Arial, sans-serif" font-size="8" fill="#ffffff">
+    <text x="15" y="50">$</text>
+    <text x="125" y="60">€</text>
+    <text x="20" y="130">¥</text>
+    <text x="130" y="130">£</text>
+  </g>
+  
+  <!-- Rotating Ring -->
+  <g opacity="0.2" stroke="url(#coinGradient1)" stroke-width="1" fill="none">
+    <circle cx="75" cy="75" r="55">
+      <animateTransform attributeName="transform" type="rotate" 
+                        values="0 75 75;360 75 75" dur="15s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="75" cy="75" r="65">
+      <animateTransform attributeName="transform" type="rotate" 
+                        values="360 75 75;0 75 75" dur="20s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

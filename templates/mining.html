@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block title %}Mining - Oxin{% endblock %}
+
+{% block content %}
+<section class="mining-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="mining-dashboard">
+                    <div class="dashboard-header">
+                        <h2 class="dashboard-title">Mining Dashboard</h2>
+                        <div class="user-plan">
+                            <span class="plan-badge plan-{{ user.plan_type }}">{{ user.plan_type.title() }} Plan</span>
+                            <span class="daily-reward">{{ user.daily_reward }} OXC/Day</span>
+                        </div>
+                    </div>
+                    
+                    {% if not active_session %}
+                    <!-- Mining Start -->
+                    <div class="mining-start">
+                        <div class="mining-visual">
+                            <div class="mining-circle">
+                                <div class="mining-icon">
+                                    <i class="fas fa-pickaxe"></i>
+                                </div>
+                                <div class="mining-text">
+                                    <h3>Ready to Mine</h3>
+                                    <p>Start your 24-hour mining session</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mining-actions">
+                            {% if user.can_start_mining() %}
+                                <button class="btn btn-neon btn-lg" onclick="startMining()">
+                                    <i class="fas fa-play me-2"></i>Start Mining
+                                </button>
+                            {% else %}
+                                <button class="btn btn-secondary btn-lg" disabled>
+                                    <i class="fas fa-clock me-2"></i>Wait 24 Hours
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- Active Mining -->
+                    <div class="mining-active">
+                        <div class="mining-progress">
+                            <div class="progress-circle">
+                                <svg class="progress-ring" width="200" height="200">
+                                    <circle class="progress-ring-circle" stroke="var(--neon-purple)" stroke-width="8" fill="transparent" r="90" cx="100" cy="100"/>
+                                </svg>
+                                <div class="progress-content">
+                                    <div class="progress-percentage">0%</div>
+                                    <div class="progress-text">Mining...</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mining-stats">
+                            <div class="stat-item">
+                                <div class="stat-label">Time Remaining</div>
+                                <div class="stat-value" id="timeRemaining">--:--:--</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Expected Reward</div>
+                                <div class="stat-value">{{ user.daily_reward }} OXC</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Current Balance</div>
+                                <div class="stat-value">{{ "%.4f"|format(user.balance) }} OXC</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Plan Upgrade -->
+                    {% if user.plan_type == 'free' %}
+                    <div class="plan-upgrade">
+                        <div class="upgrade-card">
+                            <h4>Upgrade Your Plan</h4>
+                            <p>Increase your daily rewards by upgrading to a paid plan</p>
+                            <button class="btn btn-outline-neon" data-bs-toggle="modal" data-bs-target="#upgradeModal">
+                                <i class="fas fa-arrow-up me-2"></i>Upgrade Plan
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="sidebar">
+                    <!-- Referral Section -->
+                    <div class="sidebar-card">
+                        <h5 class="card-title">
+                            <i class="fas fa-users me-2"></i>Referral System
+                        </h5>
+                        <div class="referral-stats">
+                            <div class="stat-row">
+                                <span>Your Referrals:</span>
+                                <span class="text-neon">{{ user.referrals|length }}</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Today's Bonus:</span>
+                                <span class="text-neon">+{{ "%.2f"|format(user.get_referral_bonus()) }} OXC</span>
+                            </div>
+                        </div>
+                        <div class="referral-code">
+                            <label>Your Referral Code:</label>
+                            <div class="code-input">
+                                <input type="text" class="form-control" value="{{ user.referral_code }}" readonly>
+                                <button class="btn btn-sm btn-outline-neon" onclick="copyReferralCode()">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Announcements -->
+                    <div class="sidebar-card">
+                        <h5 class="card-title">
+                            <i class="fas fa-bullhorn me-2"></i>Announcements
+                        </h5>
+                        <div class="announcements">
+                            {% for announcement in announcements %}
+                            <div class="announcement-item">
+                                <h6>{{ announcement.title }}</h6>
+                                <p>{{ announcement.content }}</p>
+                                <small class="text-muted">{{ announcement.created_at|timeago }}</small>
+                            </div>
+                            {% endfor %}
+                            {% if not announcements %}
+                            <p class="text-muted">No announcements yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Upgrade Modal -->
+<div class="modal fade" id="upgradeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upgrade Your Plan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('upgrade_plan') }}">
+                    <div class="form-group">
+                        <label for="amount">USDT Amount (1-200)</label>
+                        <input type="number" class="form-control" id="amount" name="amount" min="1" max="200" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Daily Reward Calculation:</label>
+                        <div class="reward-calc">
+                            <span id="calculatedReward">0.00</span> OXC/Day (Amount × 1.2)
+                        </div>
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>Payment Instructions:</strong><br>
+                        1. Send USDT to our BEP20 address<br>
+                        2. Upload payment screenshot<br>
+                        3. Wait for admin approval
+                    </div>
+                    <button type="submit" class="btn btn-neon w-100">Submit Upgrade Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let miningInterval;
+    
+    function startMining() {
+        fetch('/start_mining', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to start mining');
+        });
+    }
+    
+    function updateMiningStatus() {
+        fetch('/mining_status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.active) {
+                updateMiningDisplay(data.progress, data.time_remaining);
+            } else if (data.completed) {
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error updating mining status:', error);
+        });
+    }
+    
+    function updateMiningDisplay(progress, timeRemaining) {
+        // Update progress circle
+        const circle = document.querySelector('.progress-ring-circle');
+        const radius = circle.r.baseVal.value;
+        const circumference = radius * 2 * Math.PI;
+        
+        circle.style.strokeDasharray = `${circumference} ${circumference}`;
+        circle.style.strokeDashoffset = circumference;
+        
+        const offset = circumference - progress / 100 * circumference;
+        circle.style.strokeDashoffset = offset;
+        
+        // Update percentage
+        document.querySelector('.progress-percentage').textContent = progress.toFixed(1) + '%';
+        
+        // Update time remaining
+        const hours = Math.floor(timeRemaining / 3600);
+        const minutes = Math.floor((timeRemaining % 3600) / 60);
+        const seconds = timeRemaining % 60;
+        
+        document.getElementById('timeRemaining').textContent = 
+            `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    function copyReferralCode() {
+        const codeInput = document.querySelector('.referral-code input');
+        codeInput.select();
+        document.execCommand('copy');
+        
+        // Show feedback
+        const button = document.querySelector('.referral-code button');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i>';
+        setTimeout(() => {
+            button.innerHTML = originalText;
+        }, 2000);
+    }
+    
+    // Calculate reward on amount change
+    document.getElementById('amount').addEventListener('input', function() {
+        const amount = parseFloat(this.value) || 0;
+        const reward = amount * 1.2;
+        document.getElementById('calculatedReward').textContent = reward.toFixed(2);
+    });
+    
+    // Start mining status updates if mining is active
+    {% if active_session %}
+    miningInterval = setInterval(updateMiningStatus, 5000);
+    updateMiningStatus();
+    {% endif %}
+</script>
+{% endblock %}

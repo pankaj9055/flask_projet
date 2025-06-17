@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Oxin{% endblock %}
+
+{% block content %}
+<section class="profile-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="profile-main">
+                    <!-- Profile Header -->
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h2>{{ user.name }}</h2>
+                            <p class="profile-email">{{ user.email }}</p>
+                            <p class="profile-country">
+                                <i class="fas fa-map-marker-alt me-2"></i>{{ user.country }}
+                            </p>
+                        </div>
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">{{ user.plan_type.title() }}</div>
+                                <div class="stat-label">Plan</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">{{ "%.4f"|format(user.balance) }}</div>
+                                <div class="stat-label">OXC Balance</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">{{ referrals|length }}</div>
+                                <div class="stat-label">Referrals</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mining History -->
+                    <div class="profile-card">
+                        <h4 class="card-title">
+                            <i class="fas fa-history me-2"></i>Mining History
+                        </h4>
+                        <div class="mining-history">
+                            {% for session in mining_logs %}
+                            <div class="history-item">
+                                <div class="history-info">
+                                    <div class="history-date">{{ session.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                                    <div class="history-status">
+                                        {% if session.is_active %}
+                                            <span class="badge badge-warning">Active</span>
+                                        {% else %}
+                                            <span class="badge badge-success">Completed</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="history-reward">
+                                    {% if session.amount_mined > 0 %}
+                                        <span class="reward-amount">+{{ "%.4f"|format(session.amount_mined) }} OXC</span>
+                                    {% else %}
+                                        <span class="reward-pending">Pending</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% if not mining_logs %}
+                            <p class="text-muted">No mining history yet. Start mining to see your progress!</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Referral System -->
+                    <div class="profile-card">
+                        <h4 class="card-title">
+                            <i class="fas fa-users me-2"></i>Referral System
+                        </h4>
+                        <div class="referral-info">
+                            <div class="referral-stats">
+                                <div class="stat-card">
+                                    <div class="stat-number">{{ referrals|length }}</div>
+                                    <div class="stat-text">Total Referrals</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">{{ "%.2f"|format(user.get_referral_bonus()) }}</div>
+                                    <div class="stat-text">Today's Bonus</div>
+                                </div>
+                            </div>
+                            
+                            <div class="referral-code-section">
+                                <label>Your Referral Code:</label>
+                                <div class="referral-input">
+                                    <input type="text" class="form-control" value="{{ user.referral_code }}" readonly>
+                                    <button class="btn btn-outline-neon" onclick="copyReferralCode()">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="referral-link-section">
+                                <label>Your Referral Link:</label>
+                                <div class="referral-input">
+                                    <input type="text" class="form-control" value="{{ request.url_root }}auth?ref={{ user.referral_code }}" readonly>
+                                    <button class="btn btn-outline-neon" onclick="copyReferralLink()">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            {% if referrals %}
+                            <div class="referral-list">
+                                <h5>Your Referrals:</h5>
+                                {% for referral in referrals %}
+                                <div class="referral-item">
+                                    <div class="referral-info">
+                                        <strong>{{ referral.name }}</strong>
+                                        <span class="referral-date">Joined {{ referral.created_at|timeago }}</span>
+                                    </div>
+                                    <div class="referral-plan">
+                                        <span class="plan-badge plan-{{ referral.plan_type }}">{{ referral.plan_type.title() }}</span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="profile-sidebar">
+                    <!-- Plan Information -->
+                    <div class="sidebar-card">
+                        <h5 class="card-title">
+                            <i class="fas fa-medal me-2"></i>Plan Information
+                        </h5>
+                        <div class="plan-info">
+                            <div class="plan-current">
+                                <span class="plan-badge plan-{{ user.plan_type }}">{{ user.plan_type.title() }} Plan</span>
+                            </div>
+                            <div class="plan-details">
+                                <div class="detail-row">
+                                    <span>Daily Reward:</span>
+                                    <span class="text-neon">{{ user.daily_reward }} OXC</span>
+                                </div>
+                                {% if user.plan_type == 'paid' %}
+                                <div class="detail-row">
+                                    <span>Investment:</span>
+                                    <span class="text-neon">${{ user.plan_amount }}</span>
+                                </div>
+                                {% endif %}
+                                <div class="detail-row">
+                                    <span>Member Since:</span>
+                                    <span>{{ user.created_at.strftime('%Y-%m-%d') }}</span>
+                                </div>
+                            </div>
+                            {% if user.plan_type == 'free' %}
+                            <button class="btn btn-neon w-100 mt-3" data-bs-toggle="modal" data-bs-target="#upgradeModal">
+                                Upgrade Plan
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Announcements -->
+                    <div class="sidebar-card">
+                        <h5 class="card-title">
+                            <i class="fas fa-bullhorn me-2"></i>Announcements
+                        </h5>
+                        <div class="announcements">
+                            {% for announcement in announcements %}
+                            <div class="announcement-item">
+                                <h6>{{ announcement.title }}</h6>
+                                <p>{{ announcement.content }}</p>
+                                <small class="text-muted">{{ announcement.created_at|timeago }}</small>
+                            </div>
+                            {% endfor %}
+                            {% if not announcements %}
+                            <p class="text-muted">No announcements yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="sidebar-card">
+                        <h5 class="card-title">
+                            <i class="fas fa-bolt me-2"></i>Quick Actions
+                        </h5>
+                        <div class="quick-actions">
+                            <a href="{{ url_for('mining') }}" class="btn btn-outline-neon w-100 mb-2">
+                                <i class="fas fa-pickaxe me-2"></i>Go to Mining
+                            </a>
+                            <a href="{{ url_for('wallet') }}" class="btn btn-outline-neon w-100 mb-2">
+                                <i class="fas fa-wallet me-2"></i>View Wallet
+                            </a>
+                            <a href="{{ url_for('logout') }}" class="btn btn-outline-danger w-100">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Upgrade Modal -->
+<div class="modal fade" id="upgradeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upgrade Your Plan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('upgrade_plan') }}">
+                    <div class="form-group">
+                        <label for="amount">USDT Amount (1-200)</label>
+                        <input type="number" class="form-control" id="amount" name="amount" min="1" max="200" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Daily Reward Calculation:</label>
+                        <div class="reward-calc">
+                            <span id="calculatedReward">0.00</span> OXC/Day (Amount × 1.2)
+                        </div>
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>Payment Instructions:</strong><br>
+                        1. Send USDT to our BEP20 address<br>
+                        2. Upload payment screenshot<br>
+                        3. Wait for admin approval
+                    </div>
+                    <button type="submit" class="btn btn-neon w-100">Submit Upgrade Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function copyReferralCode() {
+        const codeInput = document.querySelector('.referral-code-section input');
+        codeInput.select();
+        document.execCommand('copy');
+        showCopyFeedback('Code copied!');
+    }
+    
+    function copyReferralLink() {
+        const linkInput = document.querySelector('.referral-link-section input');
+        linkInput.select();
+        document.execCommand('copy');
+        showCopyFeedback('Link copied!');
+    }
+    
+    function showCopyFeedback(message) {
+        // Create temporary toast notification
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.textContent = message;
+        toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--neon-purple);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s;
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.opacity = '1';
+        }, 100);
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 2000);
+    }
+    
+    // Calculate reward on amount change
+    document.getElementById('amount').addEventListener('input', function() {
+        const amount = parseFloat(this.value) || 0;
+        const reward = amount * 1.2;
+        document.getElementById('calculatedReward').textContent = reward.toFixed(2);
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Oxin{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <h2 class="auth-title">Welcome to <span class="gradient-text">Oxin</span></h2>
+                        <p class="auth-subtitle">Join the future of cryptocurrency mining</p>
+                    </div>
+                    
+                    <!-- Login Form -->
+                    <div class="auth-form" id="loginForm">
+                        <h3 class="form-title">Login</h3>
+                        <form method="POST" action="{{ url_for('login') }}">
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <button type="submit" class="btn btn-neon w-100">Login</button>
+                        </form>
+                        
+                        <div class="auth-switch">
+                            <p>Don't have an account? <a href="#" onclick="showRegisterForm()">Register here</a></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Register Form -->
+                    <div class="auth-form d-none" id="registerForm">
+                        <h3 class="form-title">Register</h3>
+                        <form method="POST" action="{{ url_for('register') }}">
+                            <div class="form-group">
+                                <label for="reg_name">Full Name</label>
+                                <input type="text" class="form-control" id="reg_name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="reg_email">Email Address</label>
+                                <input type="email" class="form-control" id="reg_email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="reg_password">Password</label>
+                                <input type="password" class="form-control" id="reg_password" name="password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <select class="form-control" id="country" name="country" required>
+                                    <option value="">Select Country</option>
+                                    <option value="US">United States</option>
+                                    <option value="UK">United Kingdom</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="AU">Australia</option>
+                                    <option value="DE">Germany</option>
+                                    <option value="FR">France</option>
+                                    <option value="JP">Japan</option>
+                                    <option value="CN">China</option>
+                                    <option value="IN">India</option>
+                                    <option value="BR">Brazil</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="referral_code">Referral Code (Optional)</label>
+                                <input type="text" class="form-control" id="referral_code" name="referral_code" placeholder="Enter referral code">
+                            </div>
+                            <button type="submit" class="btn btn-neon w-100">Register</button>
+                        </form>
+                        
+                        <div class="auth-switch">
+                            <p>Already have an account? <a href="#" onclick="showLoginForm()">Login here</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function showRegisterForm() {
+        document.getElementById('loginForm').classList.add('d-none');
+        document.getElementById('registerForm').classList.remove('d-none');
+    }
+    
+    function showLoginForm() {
+        document.getElementById('registerForm').classList.add('d-none');
+        document.getElementById('loginForm').classList.remove('d-none');
+    }
+</script>
+{% endblock %}

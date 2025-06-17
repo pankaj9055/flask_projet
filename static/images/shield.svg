@@ -1,0 +1,130 @@
+<svg width="250" height="250" viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="innerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#374151;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1f2937;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="checkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  
+  <!-- Main Shield Body -->
+  <path d="M125 20 C180 20 210 50 210 80 C210 120 210 160 190 180 C170 200 150 210 125 220 C100 210 80 200 60 180 C40 160 40 120 40 80 C40 50 70 20 125 20 Z" 
+        fill="url(#shieldGradient)" filter="url(#shadow)"/>
+  
+  <!-- Inner Shield -->
+  <path d="M125 35 C170 35 195 60 195 85 C195 120 195 155 178 172 C161 189 143 197 125 205 C107 197 89 189 72 172 C55 155 55 120 55 85 C55 60 80 35 125 35 Z" 
+        fill="url(#innerGradient)" opacity="0.8"/>
+  
+  <!-- Shield Border -->
+  <path d="M125 20 C180 20 210 50 210 80 C210 120 210 160 190 180 C170 200 150 210 125 220 C100 210 80 200 60 180 C40 160 40 120 40 80 C40 50 70 20 125 20 Z" 
+        stroke="url(#shieldGradient)" stroke-width="3" fill="none" opacity="0.6"/>
+  
+  <!-- Checkmark -->
+  <g fill="url(#checkGradient)" filter="url(#glow)">
+    <path d="M95 120 L110 135 L155 90" stroke="url(#checkGradient)" stroke-width="8" 
+          stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <animate attributeName="stroke-dasharray" values="0,100;100,0" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dashoffset" values="0;-100" dur="2s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  
+  <!-- Decorative Elements -->
+  <g opacity="0.6">
+    <!-- Top Emblem -->
+    <circle cx="125" cy="60" r="8" fill="url(#shieldGradient)" opacity="0.8"/>
+    <circle cx="125" cy="60" r="4" fill="#8b5cf6"/>
+    
+    <!-- Side Elements -->
+    <rect x="70" y="80" width="20" height="3" fill="#8b5cf6" opacity="0.7" rx="1.5"/>
+    <rect x="160" y="80" width="20" height="3" fill="#8b5cf6" opacity="0.7" rx="1.5"/>
+    <rect x="70" y="100" width="15" height="3" fill="#3b82f6" opacity="0.7" rx="1.5"/>
+    <rect x="165" y="100" width="15" height="3" fill="#3b82f6" opacity="0.7" rx="1.5"/>
+  </g>
+  
+  <!-- Security Pattern -->
+  <g opacity="0.3" stroke="url(#shieldGradient)" stroke-width="1" fill="none">
+    <path d="M80 140 Q125 120 170 140"/>
+    <path d="M85 150 Q125 130 165 150"/>
+    <path d="M90 160 Q125 140 160 160"/>
+  </g>
+  
+  <!-- Glowing Particles -->
+  <g opacity="0.8">
+    <circle cx="90" cy="70" r="1.5" fill="#8b5cf6">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="70;65;70" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="160" cy="75" r="1" fill="#3b82f6">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="75;70;75" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="110" cy="65" r="1.2" fill="#ec4899">
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="1.8s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="65;60;65" dur="2.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="140" cy="68" r="0.8" fill="#10b981">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2.2s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="68;63;68" dur="3.2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Energy Rings -->
+  <g opacity="0.4" stroke="url(#shieldGradient)" stroke-width="1.5" fill="none">
+    <circle cx="125" cy="120" r="60">
+      <animate attributeName="r" values="60;65;60" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.4;0.1;0.4" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="125" cy="120" r="80">
+      <animate attributeName="r" values="80;85;80" dur="5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.3;0.1;0.3" dur="5s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Lock Symbol (Alternative to checkmark) -->
+  <g opacity="0" fill="url(#checkGradient)">
+    <rect x="115" y="110" width="20" height="15" rx="2" fill="url(#innerGradient)"/>
+    <path d="M118 110 V105 C118 100 120 98 125 98 C130 98 132 100 132 105 V110" 
+          stroke="url(#checkGradient)" stroke-width="2" fill="none"/>
+    <circle cx="125" cy="118" r="2" fill="url(#checkGradient)"/>
+    
+    <animateTransform attributeName="transform" type="scale" 
+                      values="0;1;0" dur="3s" begin="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;0" dur="3s" begin="2s" repeatCount="indefinite"/>
+  </g>
+  
+  <!-- Hex Pattern Background -->
+  <g opacity="0.1" stroke="url(#shieldGradient)" stroke-width="0.5" fill="none">
+    <polygon points="100,90 105,95 105,105 100,110 95,105 95,95"/>
+    <polygon points="150,90 155,95 155,105 150,110 145,105 145,95"/>
+    <polygon points="125,110 130,115 130,125 125,130 120,125 120,115"/>
+    <polygon points="100,130 105,135 105,145 100,150 95,145 95,135"/>
+    <polygon points="150,130 155,135 155,145 150,150 145,145 145,135"/>
+  </g>
+  
+  <!-- Scan Line Effect -->
+  <g opacity="0.5">
+    <line x1="40" y1="120" x2="210" y2="120" stroke="url(#checkGradient)" stroke-width="1">
+      <animate attributeName="y1" values="50;180;50" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="50;180;50" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.8;0" dur="3s" repeatCount="indefinite"/>
+    </line>
+  </g>
+</svg>
