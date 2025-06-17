@@ -168,7 +168,10 @@
                                                     </button>
                                                 </form>
                                                 {% endif %}
-                                                <button class="btn btn-sm btn-info" onclick="editUserBalance({{ user.id }}, {{ user.balance }})">
+                                                <button class="btn btn-sm btn-info" onclick="editUserPlan({{ user.id }}, '{{ user.plan_type }}', {{ user.daily_reward }}, {{ user.plan_amount }})">
+                                                    <i class="fas fa-edit"></i> Edit Plan
+                                                </button>
+                                                <button class="btn btn-sm btn-secondary" onclick="editUserBalance({{ user.id }}, {{ user.balance }})">
                                                     <i class="fas fa-wallet"></i> Balance
                                                 </button>
                                             </div>
@@ -216,12 +219,22 @@
                                         <td>{{ deposit.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
                                         <td>
                                             {% if deposit.status == 'pending' %}
-                                                <a href="{{ url_for('approve_deposit', deposit_id=deposit.id) }}" 
-                                                   class="btn btn-sm btn-success">Approve</a>
-                                                <a href="{{ url_for('reject_deposit', deposit_id=deposit.id) }}" 
-                                                   class="btn btn-sm btn-danger">Reject</a>
+                                                <div class="btn-group" role="group">
+                                                    <a href="{{ url_for('approve_deposit', deposit_id=deposit.id) }}" 
+                                                       class="btn btn-sm btn-success" 
+                                                       onclick="return confirm('Approve this deposit?')">
+                                                        <i class="fas fa-check"></i> Approve
+                                                    </a>
+                                                    <a href="{{ url_for('reject_deposit', deposit_id=deposit.id) }}" 
+                                                       class="btn btn-sm btn-danger"
+                                                       onclick="return confirm('Reject this deposit?')">
+                                                        <i class="fas fa-times"></i> Reject
+                                                    </a>
+                                                </div>
                                             {% else %}
-                                                <span class="text-muted">{{ deposit.status.title() }}</span>
+                                                <span class="badge badge-{{ 'success' if deposit.status == 'approved' else 'danger' }}">
+                                                    {{ deposit.status.title() }}
+                                                </span>
                                             {% endif %}
                                         </td>
                                     </tr>
@@ -329,6 +342,63 @@
         });
         
         event.target.classList.add('active');
+    }
+
+    function editUserPlan(userId, currentPlan, currentReward, currentAmount) {
+        const planType = prompt('Enter plan type (free/paid):', currentPlan);
+        if (!planType) return;
+        
+        const dailyReward = prompt('Enter daily reward (OXC):', currentReward);
+        if (!dailyReward) return;
+        
+        const planAmount = prompt('Enter plan amount ($):', currentAmount);
+        if (!planAmount) return;
+        
+        // Create form and submit
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/admin/edit_user_plan/' + userId;
+        
+        const planInput = document.createElement('input');
+        planInput.type = 'hidden';
+        planInput.name = 'plan_type';
+        planInput.value = planType;
+        
+        const rewardInput = document.createElement('input');
+        rewardInput.type = 'hidden';
+        rewardInput.name = 'daily_reward';
+        rewardInput.value = dailyReward;
+        
+        const amountInput = document.createElement('input');
+        amountInput.type = 'hidden';
+        amountInput.name = 'plan_amount';
+        amountInput.value = planAmount;
+        
+        form.appendChild(planInput);
+        form.appendChild(rewardInput);
+        form.appendChild(amountInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+    
+    function editUserBalance(userId, currentBalance) {
+        const newBalance = prompt('Enter new balance (OXC):', currentBalance);
+        if (!newBalance) return;
+        
+        // Create form and submit
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/admin/edit_user_balance/' + userId;
+        
+        const balanceInput = document.createElement('input');
+        balanceInput.type = 'hidden';
+        balanceInput.name = 'balance';
+        balanceInput.value = newBalance;
+        
+        form.appendChild(balanceInput);
+        document.body.appendChild(form);
+        form.submit();
     }
 </script>
 {% endblock %}

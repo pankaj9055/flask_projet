@@ -390,6 +390,51 @@ def admin_update_payment_settings():
     
     return redirect(url_for('admin_payment_settings'))
 
+@app.route('/admin/edit_user_plan/<int:user_id>', methods=['POST'])
+def admin_edit_user_plan(user_id):
+    if 'admin_id' not in session:
+        return redirect(url_for('admin_login'))
+    
+    try:
+        user = User.query.get_or_404(user_id)
+        
+        plan_type = request.form.get('plan_type', 'free')
+        daily_reward = float(request.form.get('daily_reward', 0.5))
+        plan_amount = float(request.form.get('plan_amount', 0.0))
+        
+        user.plan_type = plan_type
+        user.daily_reward = daily_reward
+        user.plan_amount = plan_amount
+        
+        db.session.commit()
+        flash(f'User {user.name} plan updated successfully!', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash('Failed to update user plan', 'error')
+    
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/edit_user_balance/<int:user_id>', methods=['POST'])
+def admin_edit_user_balance(user_id):
+    if 'admin_id' not in session:
+        return redirect(url_for('admin_login'))
+    
+    try:
+        user = User.query.get_or_404(user_id)
+        
+        new_balance = float(request.form.get('balance', 0.0))
+        user.balance = new_balance
+        
+        db.session.commit()
+        flash(f'User {user.name} balance updated to {new_balance} OXC!', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash('Failed to update user balance', 'error')
+    
+    return redirect(url_for('admin_dashboard'))
+
 # Template filters
 @app.template_filter('timeago')
 def timeago(dt):
