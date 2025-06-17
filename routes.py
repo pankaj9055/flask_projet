@@ -287,6 +287,50 @@ def admin_logout():
     session.pop('admin_id', None)
     return redirect(url_for('admin_login'))
 
+@app.route('/admin/upgrade_user/<int:user_id>', methods=['POST'])
+def admin_upgrade_user(user_id):
+    if 'admin_id' not in session:
+        return redirect(url_for('admin_login'))
+    
+    try:
+        user = User.query.get_or_404(user_id)
+        
+        # Set default paid plan values
+        user.plan_type = 'paid'
+        user.plan_amount = 50.0  # Default upgrade amount
+        user.daily_reward = 60.0  # 50 * 1.2
+        
+        db.session.commit()
+        flash(f'User {user.name} upgraded to paid plan successfully!', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash('Failed to upgrade user plan', 'error')
+    
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/downgrade_user/<int:user_id>', methods=['POST'])
+def admin_downgrade_user(user_id):
+    if 'admin_id' not in session:
+        return redirect(url_for('admin_login'))
+    
+    try:
+        user = User.query.get_or_404(user_id)
+        
+        # Reset to free plan
+        user.plan_type = 'free'
+        user.plan_amount = 0.0
+        user.daily_reward = 0.5  # Default free plan reward
+        
+        db.session.commit()
+        flash(f'User {user.name} downgraded to free plan successfully!', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash('Failed to downgrade user plan', 'error')
+    
+    return redirect(url_for('admin_dashboard'))
+
 # Template filters
 @app.template_filter('timeago')
 def timeago(dt):

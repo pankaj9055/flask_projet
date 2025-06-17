@@ -126,6 +126,7 @@
                                         <th>Referrals</th>
                                         <th>Status</th>
                                         <th>Joined</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -140,7 +141,7 @@
                                             </span>
                                         </td>
                                         <td>{{ "%.4f"|format(user.balance) }} OXC</td>
-                                        <td>{{ user.referrals|length }}</td>
+                                        <td>{{ user.get_referrals_count() }}</td>
                                         <td>
                                             {% if user.is_active %}
                                                 <span class="badge badge-success">Active</span>
@@ -149,6 +150,26 @@
                                             {% endif %}
                                         </td>
                                         <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                                        <td>
+                                            <div class="plan-actions">
+                                                {% if user.plan_type == 'free' %}
+                                                <form method="POST" action="{{ url_for('admin_upgrade_user', user_id=user.id) }}" style="display: inline;">
+                                                    <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Upgrade user to paid plan?')">
+                                                        <i class="fas fa-arrow-up"></i> Upgrade
+                                                    </button>
+                                                </form>
+                                                {% else %}
+                                                <form method="POST" action="{{ url_for('admin_downgrade_user', user_id=user.id) }}" style="display: inline;">
+                                                    <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Downgrade user to free plan?')">
+                                                        <i class="fas fa-arrow-down"></i> Downgrade
+                                                    </button>
+                                                </form>
+                                                {% endif %}
+                                                <button class="btn btn-sm btn-info" onclick="editUserBalance({{ user.id }}, {{ user.balance }})">
+                                                    <i class="fas fa-wallet"></i> Balance
+                                                </button>
+                                            </div>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
