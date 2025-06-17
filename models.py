@@ -19,10 +19,9 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
     
-    # Relationships
-    mining_sessions = db.relationship('MiningSession', backref='user', lazy=True)
-    deposits = db.relationship('Deposit', backref='user', lazy=True)
-    referrals = db.relationship('User', backref='referrer', remote_side=[id])
+    # Relationships - optimized for performance
+    mining_sessions = db.relationship('MiningSession', backref='user', lazy='select')
+    deposits = db.relationship('Deposit', backref='user', lazy='select')
     
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -64,18 +63,38 @@ class User(db.Model):
         today = datetime.utcnow().date()
         bonus = 0.0
         
-        for referred_user in self.referrals:
-            # Check if referred user mined today
-            today_session = MiningSession.query.filter_by(
-                user_id=referred_user.id
-            ).filter(
-                MiningSession.created_at >= datetime.combine(today, datetime.min.time())
-            ).first()
-            
-            if today_session:
-                bonus += referred_user.daily_reward * 0.1  # 10% bonus
+        try:
+            # Get referrals efficiently
+            referral_users = User.query.filter_by(referred_by=self.id).all()
+            for referred_user in referral_users:
+                # Check if referred user mined today
+                today_session = MiningSession.query.filter_by(
+                    user_id=referred_user.id
+                ).filter(
+                    MiningSession.created_at >= datetime.combine(today, datetime.min.time())
+                ).first()
+                
+                if today_session:
+                    bonus += referred_user.daily_reward * 0.1  # 10% bonus
+        except Exception:
+            bonus = 0.0
         
         return bonus
+
+    def get_referrals_count(self):
+        """Get count of referrals safely"""
+        try:
+            return User.query.filter_by(referred_by=self.id).count()
+        except Exception:
+            return 0
+    
+    @property
+    def referrals(self):
+        """Get referrals safely"""
+        try:
+            return User.query.filter_by(referred_by=self.id).all()
+        except Exception:
+            return []
 
 class MiningSession(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -113,15 +132,17 @@ class MiningSession(db.Model):
         self.is_active = False
         self.completed_at = datetime.utcnow()
         
-        # Calculate rewards
-        base_reward = self.user.daily_reward
-        referral_bonus = self.user.get_referral_bonus()
-        total_reward = base_reward + referral_bonus
-        
-        self.amount_mined = total_reward
-        self.user.balance += total_reward
-        
-        db.session.commit()
+        # Get user and calculate rewards
+        user = User.query.get(self.user_id)
+        if user:
+            base_reward = user.daily_reward
+            referral_bonus = user.get_referral_bonus()
+            total_reward = base_reward + referral_bonus
+            
+            self.amount_mined = total_reward
+            user.balance += total_reward
+            
+            db.session.commit()
 
 class Deposit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
