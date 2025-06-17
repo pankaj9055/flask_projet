@@ -172,3 +172,24 @@ class Announcement(db.Model):
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
+
+class PaymentSettings(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    usdt_address = db.Column(db.String(200), nullable=False, default='0x742d35Cc6634C0532925a3b8D4C93d5A45632DD3')
+    qr_code_url = db.Column(db.String(500), nullable=True)
+    network = db.Column(db.String(50), default='BEP20')
+    min_amount = db.Column(db.Float, default=1.0)
+    max_amount = db.Column(db.Float, default=200.0)
+    reward_multiplier = db.Column(db.Float, default=1.2)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    @classmethod
+    def get_settings(cls):
+        """Get current payment settings or create default"""
+        settings = cls.query.first()
+        if not settings:
+            settings = cls()
+            db.session.add(settings)
+            db.session.commit()
+        return settings

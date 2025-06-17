@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, session, flash, jsonify
 from app import app, db
-from models import User, MiningSession, Deposit, AdminUser, Announcement
+from models import User, MiningSession, Deposit, AdminUser, Announcement, PaymentSettings
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timedelta
 import os
@@ -117,8 +117,9 @@ def mining():
     
     active_session = user.get_active_mining_session()
     announcements = Announcement.query.filter_by(is_active=True).order_by(Announcement.created_at.desc()).limit(5).all()
+    payment_settings = PaymentSettings.get_settings()
     
-    return render_template('mining.html', user=user, active_session=active_session, announcements=announcements)
+    return render_template('mining.html', user=user, active_session=active_session, announcements=announcements, payment_settings=payment_settings)
 
 @app.route('/start_mining', methods=['POST'])
 def start_mining():
@@ -172,20 +173,42 @@ def upgrade_plan():
     user = User.query.get(session['user_id'])
     amount = float(request.form.get('amount', 0))
     
-    if amount <= 0:
-        flash('Invalid amount', 'error')
-        return redirect(url_for('mining'))
+    settings = PaymentSettings.get_settings()
+    
+    if amount < settings.min_amount or amount > settings.max_amount:
+        flash(f'Amount must be between ${settings.min_amount} and ${settings.max_amount}', 'error')
+        return redirect(url_for('profile'))
+    
+    # Handle file upload
+    screenshot_path = None
+    if 'screenshot' in request.files:
+        file = request.files['screenshot']
+        if file and file.filename:
+            import os
+            import uuid
+            from werkzeug.utils import secure_filename
+            
+            # Create uploads directory if it doesn't exist
+            upload_dir = 'static/uploads'
+            os.makedirs(upload_dir, exist_ok=True)
+            
+            # Generate unique filename
+            file_ext = os.path.splitext(secure_filename(file.filename))[1]
+            filename = f"{uuid.uuid4()}{file_ext}"
+            screenshot_path = os.path.join(upload_dir, filename)
+            file.save(screenshot_path)
     
     # Create deposit record
     deposit = Deposit(
         user_id=user.id,
-        amount=amount
+        amount=amount,
+        screenshot_path=screenshot_path
     )
     db.session.add(deposit)
     db.session.commit()
     
-    flash('Upgrade request submitted. Please upload payment screenshot.', 'info')
-    return redirect(url_for('mining'))
+    flash('Upgrade request submitted successfully! Wait for admin approval (24-48 hours).', 'success')
+    return redirect(url_for('profile'))
 
 @app.route('/wallet')
 def wallet():
@@ -204,8 +227,9 @@ def profile():
     mining_logs = MiningSession.query.filter_by(user_id=user.id).order_by(MiningSession.created_at.desc()).limit(10).all()
     referrals = User.query.filter_by(referred_by=user.id).all()
     announcements = Announcement.query.filter_by(is_active=True).order_by(Announcement.created_at.desc()).limit(5).all()
+    payment_settings = PaymentSettings.get_settings()
     
-    return render_template('profile.html', user=user, mining_logs=mining_logs, referrals=referrals, announcements=announcements)
+    return render_template('profile.html', user=user, mining_logs=mining_logs, referrals=referrals, announcements=announcements, payment_settings=payment_settings)
 
 # Admin Routes
 @app.route('/admin')
@@ -240,6 +264,7 @@ def admin_dashboard():
     
     users = User.query.order_by(User.created_at.desc()).all()
     deposits = Deposit.query.order_by(Deposit.created_at.desc()).all()
+    payment_settings = PaymentSettings.get_settings()
     
     return render_template('admin.html', 
                          admin_dashboard=True,
@@ -248,7 +273,8 @@ def admin_dashboard():
                          pending_deposits=pending_deposits,
                          today_mining=today_mining,
                          users=users,
-                         deposits=deposits)
+                         deposits=deposits,
+                         payment_settings=payment_settings)
 
 @app.route('/admin/approve_deposit/<int:deposit_id>')
 def approve_deposit(deposit_id):
@@ -330,6 +356,39 @@ def admin_downgrade_user(user_id):
         flash('Failed to downgrade user plan', 'error')
     
     return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/payment_settings')
+def admin_payment_settings():
+    if 'admin_id' not in session:
+        return redirect(url_for('admin_login'))
+    
+    settings = PaymentSettings.get_settings()
+    return render_template('admin_payment_settings.html', settings=settings)
+
+@app.route('/admin/update_payment_settings', methods=['POST'])
+def admin_update_payment_settings():
+    if 'admin_id' not in session:
+        return redirect(url_for('admin_login'))
+    
+    try:
+        settings = PaymentSettings.get_settings()
+        
+        settings.usdt_address = request.form.get('usdt_address', settings.usdt_address)
+        settings.qr_code_url = request.form.get('qr_code_url', settings.qr_code_url)
+        settings.network = request.form.get('network', settings.network)
+        settings.min_amount = float(request.form.get('min_amount', settings.min_amount))
+        settings.max_amount = float(request.form.get('max_amount', settings.max_amount))
+        settings.reward_multiplier = float(request.form.get('reward_multiplier', settings.reward_multiplier))
+        settings.updated_at = datetime.utcnow()
+        
+        db.session.commit()
+        flash('Payment settings updated successfully!', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash('Failed to update payment settings', 'error')
+    
+    return redirect(url_for('admin_payment_settings'))
 
 # Template filters
 @app.template_filter('timeago')

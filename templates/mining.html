@@ -15,7 +15,7 @@
                             <span class="daily-reward">{{ user.daily_reward }} OXC/Day</span>
                         </div>
                     </div>
-                    
+
                     {% if not active_session %}
                     <!-- Mining Start -->
                     <div class="mining-start">
@@ -30,7 +30,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="mining-actions">
                             {% if user.can_start_mining() %}
                                 <button class="btn btn-neon btn-lg" onclick="startMining()">
@@ -57,7 +57,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="mining-stats">
                             <div class="stat-item">
                                 <div class="stat-label">Time Remaining</div>
@@ -74,7 +74,7 @@
                         </div>
                     </div>
                     {% endif %}
-                    
+
                     <!-- Plan Upgrade -->
                     {% if user.plan_type == 'free' %}
                     <div class="plan-upgrade">
@@ -89,7 +89,7 @@
                     {% endif %}
                 </div>
             </div>
-            
+
             <div class="col-lg-4">
                 <div class="sidebar">
                     <!-- Referral Section -->
@@ -117,7 +117,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Announcements -->
                     <div class="sidebar-card">
                         <h5 class="card-title">
@@ -179,7 +179,7 @@
 {% block scripts %}
 <script>
     let miningInterval;
-    
+
     function startMining() {
         fetch('/start_mining', {
             method: 'POST',
@@ -200,7 +200,7 @@
             alert('Failed to start mining');
         });
     }
-    
+
     function updateMiningStatus() {
         fetch('/mining_status')
         .then(response => response.json())
@@ -215,36 +215,36 @@
             console.error('Error updating mining status:', error);
         });
     }
-    
+
     function updateMiningDisplay(progress, timeRemaining) {
         // Update progress circle
         const circle = document.querySelector('.progress-ring-circle');
         const radius = circle.r.baseVal.value;
         const circumference = radius * 2 * Math.PI;
-        
+
         circle.style.strokeDasharray = `${circumference} ${circumference}`;
         circle.style.strokeDashoffset = circumference;
-        
+
         const offset = circumference - progress / 100 * circumference;
         circle.style.strokeDashoffset = offset;
-        
+
         // Update percentage
         document.querySelector('.progress-percentage').textContent = progress.toFixed(1) + '%';
-        
+
         // Update time remaining
         const hours = Math.floor(timeRemaining / 3600);
         const minutes = Math.floor((timeRemaining % 3600) / 60);
         const seconds = timeRemaining % 60;
-        
+
         document.getElementById('timeRemaining').textContent = 
             `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
-    
+
     function copyReferralCode() {
         const codeInput = document.querySelector('.referral-code input');
         codeInput.select();
         document.execCommand('copy');
-        
+
         // Show feedback
         const button = document.querySelector('.referral-code button');
         const originalText = button.innerHTML;
@@ -253,18 +253,47 @@
             button.innerHTML = originalText;
         }, 2000);
     }
-    
+
     // Calculate reward on amount change
     document.getElementById('amount').addEventListener('input', function() {
         const amount = parseFloat(this.value) || 0;
         const reward = amount * 1.2;
         document.getElementById('calculatedReward').textContent = reward.toFixed(2);
     });
-    
-    // Start mining status updates if mining is active
-    {% if active_session %}
-    miningInterval = setInterval(updateMiningStatus, 5000);
+
+    // Copy payment address for mining page
+    function copyMiningAddress() {
+        const addressInput = document.getElementById('paymentAddressMining');
+        addressInput.select();
+        addressInput.setSelectionRange(0, 99999);
+        document.execCommand('copy');
+
+        // Show feedback
+        const button = event.target.closest('button');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        button.classList.add('btn-success');
+        button.classList.remove('btn-outline-primary');
+
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.classList.remove('btn-success');
+            button.classList.add('btn-outline-primary');
+        }, 2000);
+    }
+
+    // Calculate reward for mining page
+    function calculateReward() {
+        const amount = parseFloat(document.getElementById('amount').value) || 0;
+        const multiplier = {{ payment_settings.reward_multiplier }};
+        const reward = (amount * multiplier).toFixed(2);
+        document.getElementById('calculatedReward').textContent = reward;
+    }
+
+    // Update mining status every 5 seconds
+    setInterval(updateMiningStatus, 5000);
+
+    // Initial update
     updateMiningStatus();
-    {% endif %}
 </script>
 {% endblock %}

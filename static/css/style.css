@@ -2016,6 +2016,84 @@ h1, h2, h3, h4, h5, h6 {
     border: 1px solid #28a745;
 }
 
+/* Payment Settings Styles */
+.payment-settings-form {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.qr-preview {
+    text-align: center;
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.qr-preview .qr-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 5px;
+}
+
+.address-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.address-container input {
+    flex: 1;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.current-qr-preview {
+    margin-top: 20px;
+}
+
+.current-qr-preview label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+/* Enhanced form styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #00ffff;
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    color: white;
+    border-radius: 8px;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    color: white;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
 /* Print Styles */
 @media print {
     .navbar,

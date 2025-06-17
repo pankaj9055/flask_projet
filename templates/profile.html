@@ -35,7 +35,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Mining History -->
                     <div class="profile-card">
                         <h4 class="card-title">
@@ -68,7 +68,7 @@
                             {% endif %}
                         </div>
                     </div>
-                    
+
                     <!-- Referral System -->
                     <div class="profile-card">
                         <h4 class="card-title">
@@ -85,7 +85,7 @@
                                     <div class="stat-text">Today's Bonus</div>
                                 </div>
                             </div>
-                            
+
                             <div class="referral-code-section">
                                 <label>Your Referral Code:</label>
                                 <div class="referral-input">
@@ -95,7 +95,7 @@
                                     </button>
                                 </div>
                             </div>
-                            
+
                             <div class="referral-link-section">
                                 <label>Your Referral Link:</label>
                                 <div class="referral-input">
@@ -105,7 +105,7 @@
                                     </button>
                                 </div>
                             </div>
-                            
+
                             {% if user.referrals %}
                             <div class="referral-list">
                                 <h5>Your Referrals:</h5>
@@ -126,7 +126,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-lg-4">
                 <div class="profile-sidebar">
                     <!-- Plan Information -->
@@ -161,7 +161,7 @@
                             {% endif %}
                         </div>
                     </div>
-                    
+
                     <!-- Announcements -->
                     <div class="sidebar-card">
                         <h5 class="card-title">
@@ -180,7 +180,7 @@
                             {% endif %}
                         </div>
                     </div>
-                    
+
                     <!-- Quick Actions -->
                     <div class="sidebar-card">
                         <h5 class="card-title">
@@ -230,15 +230,15 @@
                         2. Upload payment screenshot<br>
                         3. Wait for admin approval (24-48 hours)
                     </div>
-                    
+
                     <div class="payment-details mb-3">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="payment-address">
-                                    <label>USDT BEP20 Address:</label>
+                                    <label>USDT {{ payment_settings.network }} Address:</label>
                                     <div class="address-container">
                                         <input type="text" class="form-control" id="paymentAddress" 
-                                               value="0x742d35Cc6634C0532925a3b8D4C93d5A45632DD3" readonly>
+                                               value="{{ payment_settings.usdt_address }}" readonly>
                                         <button type="button" class="btn btn-sm btn-outline-primary" onclick="copyAddress()">
                                             <i class="fas fa-copy"></i> Copy
                                         </button>
@@ -249,15 +249,19 @@
                                 <div class="qr-code">
                                     <label>QR Code:</label>
                                     <div class="qr-container">
-                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=0x742d35Cc6634C0532925a3b8D4C93d5A45632DD3" 
-                                             alt="Payment QR Code" class="qr-image" 
-                                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iI2ZmZiIvPjx0ZXh0IHg9IjYwIiB5PSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+UVIgQ29kZTwvdGV4dD48L3N2Zz4='"">
+                                        {% if payment_settings.qr_code_url %}
+                                            <img src="{{ payment_settings.qr_code_url }}" alt="Payment QR Code" class="qr-image">
+                                        {% else %}
+                                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ payment_settings.usdt_address }}" 
+                                                 alt="Payment QR Code" class="qr-image" 
+                                                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iI2ZmZiIvPjx0ZXh0IHg9Ijc1IiB5PSI3NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzMzMyI+UVIgQ29kZTwvdGV4dD48L3N2Zz4='">
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="screenshot">Upload Payment Screenshot</label>
                         <input type="file" class="form-control" id="screenshot" name="screenshot" 
@@ -280,14 +284,14 @@
         document.execCommand('copy');
         showCopyFeedback('Code copied!');
     }
-    
+
     function copyReferralLink() {
         const linkInput = document.querySelector('.referral-link-section input');
         linkInput.select();
         document.execCommand('copy');
         showCopyFeedback('Link copied!');
     }
-    
+
     function showCopyFeedback(message) {
         // Create temporary toast notification
         const toast = document.createElement('div');
@@ -305,13 +309,13 @@
             opacity: 0;
             transition: opacity 0.3s;
         `;
-        
+
         document.body.appendChild(toast);
-        
+
         setTimeout(() => {
             toast.style.opacity = '1';
         }, 100);
-        
+
         setTimeout(() => {
             toast.style.opacity = '0';
             setTimeout(() => {
@@ -319,20 +323,21 @@
             }, 300);
         }, 2000);
     }
-    
+
     // Calculate reward on amount change
     document.getElementById('amount').addEventListener('input', function() {
         const amount = parseFloat(this.value) || 0;
-        const reward = amount * 1.2;
-        document.getElementById('calculatedReward').textContent = reward.toFixed(2);
+        const multiplier = {{ payment_settings.reward_multiplier }};
+        const reward = (amount * multiplier).toFixed(2);
+        document.getElementById('calculatedReward').textContent = reward;
     });
-    
+
     // Copy payment address function
     function copyAddress() {
         const addressInput = document.getElementById('paymentAddress');
         addressInput.select();
         addressInput.setSelectionRange(0, 99999);
-        
+
         try {
             document.execCommand('copy');
             showCopyFeedback('Payment address copied!');

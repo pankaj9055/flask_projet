@@ -32,7 +32,7 @@ with app.app_context():
     db.create_all()
     
     # Create admin user if it doesn't exist
-    from models import AdminUser
+    from models import AdminUser, PaymentSettings
     from werkzeug.security import generate_password_hash
     
     admin = AdminUser.query.filter_by(email='admin@oxin.com').first()
@@ -44,6 +44,14 @@ with app.app_context():
         db.session.add(admin)
         db.session.commit()
         print("Admin user created: admin@oxin.com / admin123")
+    
+    # Create default payment settings if not exists
+    payment_settings = PaymentSettings.query.first()
+    if not payment_settings:
+        payment_settings = PaymentSettings()
+        db.session.add(payment_settings)
+        db.session.commit()
+        print("Default payment settings created")
 
 # Import routes
 import routes
