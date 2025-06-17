@@ -104,7 +104,9 @@ The application uses SQLAlchemy models with the following key entities:
 
 ## Changelog
 
-- June 17, 2025. Initial setup
+- June 17, 2025: Initial setup
+- June 17, 2025: Performance optimization - Fixed JavaScript lag issues, optimized database queries, improved template rendering
+- June 17, 2025: Added paid plan features - QR code payment system, USDT BEP20 address integration, admin plan management controls
 
 ## User Preferences
 
