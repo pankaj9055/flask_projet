@@ -435,6 +435,36 @@ def admin_edit_user_balance(user_id):
     
     return redirect(url_for('admin_dashboard'))
 
+@app.route('/admin/update_plan_settings', methods=['POST'])
+def admin_update_plan_settings():
+    if 'admin_id' not in session:
+        return redirect(url_for('admin_login'))
+    
+    try:
+        plan_type = request.form.get('plan_type')
+        
+        if plan_type == 'free':
+            daily_reward = float(request.form.get('daily_reward', 0.5))
+            fragments_per_coin = int(request.form.get('fragments_per_coin', 1000))
+            flash(f'Free plan settings updated: {daily_reward} OXC daily, {fragments_per_coin} fragments per coin', 'success')
+        
+        elif plan_type == 'paid':
+            reward_multiplier = float(request.form.get('reward_multiplier', 1.2))
+            fragments_per_coin = int(request.form.get('fragments_per_coin', 800))
+            
+            # Update payment settings with new multiplier
+            settings = PaymentSettings.get_settings()
+            settings.reward_multiplier = reward_multiplier
+            db.session.commit()
+            
+            flash(f'Paid plan settings updated: {reward_multiplier}x multiplier, {fragments_per_coin} fragments per coin', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash('Failed to update plan settings', 'error')
+    
+    return redirect(url_for('admin_dashboard'))
+
 # Template filters
 @app.template_filter('timeago')
 def timeago(dt):

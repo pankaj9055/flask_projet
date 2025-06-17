@@ -50,6 +50,9 @@
                         <a href="#deposits" class="menu-item" onclick="showSection('deposits')">
                             <i class="fas fa-credit-card"></i>Deposits
                         </a>
+                        <a href="#plan-settings" class="menu-item" onclick="showSection('plan-settings')">
+                            <i class="fas fa-coins"></i>Plan Settings
+                        </a>
                         <a href="#payment-settings" class="menu-item" onclick="showSection('payment-settings')">
                             <i class="fas fa-cog"></i>Payment Settings
                         </a>
@@ -190,7 +193,7 @@
                         </div>
                         
                         <div class="data-table">
-                            <table class="table">
+                            <table class="table table-responsive">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -209,38 +212,96 @@
                                         <td>${{ deposit.amount }}</td>
                                         <td>
                                             {% if deposit.status == 'pending' %}
-                                                <span class="badge badge-warning">Pending</span>
+                                                <span class="badge" style="background-color: #ffc107; color: #000;">Pending</span>
                                             {% elif deposit.status == 'approved' %}
-                                                <span class="badge badge-success">Approved</span>
+                                                <span class="badge" style="background-color: #28a745; color: #fff;">Approved</span>
                                             {% else %}
-                                                <span class="badge badge-danger">Rejected</span>
+                                                <span class="badge" style="background-color: #dc3545; color: #fff;">Rejected</span>
                                             {% endif %}
                                         </td>
-                                        <td>{{ deposit.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>{{ deposit.created_at.strftime('%m-%d %H:%M') }}</td>
                                         <td>
                                             {% if deposit.status == 'pending' %}
-                                                <div class="btn-group" role="group">
+                                                <div class="btn-group-vertical" role="group" style="gap: 5px;">
                                                     <a href="{{ url_for('approve_deposit', deposit_id=deposit.id) }}" 
-                                                       class="btn btn-sm btn-success" 
-                                                       onclick="return confirm('Approve this deposit?')">
-                                                        <i class="fas fa-check"></i> Approve
+                                                       class="btn btn-success btn-sm" 
+                                                       onclick="return confirm('Approve this deposit?')"
+                                                       style="font-size: 11px; padding: 3px 8px;">
+                                                        ✓ Approve
                                                     </a>
                                                     <a href="{{ url_for('reject_deposit', deposit_id=deposit.id) }}" 
-                                                       class="btn btn-sm btn-danger"
-                                                       onclick="return confirm('Reject this deposit?')">
-                                                        <i class="fas fa-times"></i> Reject
+                                                       class="btn btn-danger btn-sm"
+                                                       onclick="return confirm('Reject this deposit?')"
+                                                       style="font-size: 11px; padding: 3px 8px;">
+                                                        ✗ Reject
                                                     </a>
                                                 </div>
                                             {% else %}
-                                                <span class="badge badge-{{ 'success' if deposit.status == 'approved' else 'danger' }}">
-                                                    {{ deposit.status.title() }}
-                                                </span>
+                                                <span class="text-muted" style="font-size: 12px;">{{ deposit.status.title() }}</span>
                                             {% endif %}
                                         </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Plan Settings Section -->
+                    <div id="plan-settings" class="admin-section d-none">
+                        <div class="section-header">
+                            <h2>Plan Configuration</h2>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Free Plan Settings</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form method="POST" action="{{ url_for('admin_update_plan_settings') }}">
+                                            <input type="hidden" name="plan_type" value="free">
+                                            <div class="form-group">
+                                                <label for="free_daily_reward">Daily Reward (OXC)</label>
+                                                <input type="number" class="form-control" id="free_daily_reward" name="daily_reward" 
+                                                       value="0.5" min="0.1" step="0.1" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="free_fragments_per_coin">Fragments per 1 OXC</label>
+                                                <input type="number" class="form-control" id="free_fragments_per_coin" name="fragments_per_coin" 
+                                                       value="1000" min="100" step="100" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Update Free Plan</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Paid Plan Settings</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form method="POST" action="{{ url_for('admin_update_plan_settings') }}">
+                                            <input type="hidden" name="plan_type" value="paid">
+                                            <div class="form-group">
+                                                <label for="paid_reward_multiplier">Reward Multiplier</label>
+                                                <input type="number" class="form-control" id="paid_reward_multiplier" name="reward_multiplier" 
+                                                       value="1.2" min="1.0" step="0.1" required>
+                                                <small class="form-text text-muted">Daily reward = Amount × Multiplier</small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="paid_fragments_per_coin">Fragments per 1 OXC</label>
+                                                <input type="number" class="form-control" id="paid_fragments_per_coin" name="fragments_per_coin" 
+                                                       value="800" min="100" step="100" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-success">Update Paid Plan</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
