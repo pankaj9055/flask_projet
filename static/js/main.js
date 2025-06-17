@@ -233,10 +233,12 @@
     }
 
     function clearValidation() {
-        this.classList.remove('error');
-        const errorMessage = this.parentNode.querySelector('.error-message');
-        if (errorMessage) {
-            errorMessage.remove();
+        if (this && this.classList) {
+            this.classList.remove('error');
+            const errorMessage = this.parentNode ? this.parentNode.querySelector('.error-message') : null;
+            if (errorMessage) {
+                errorMessage.remove();
+            }
         }
     }
 

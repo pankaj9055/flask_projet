@@ -1947,6 +1947,75 @@ h1, h2, h3, h4, h5, h6 {
 .me-3 { margin-right: 1rem !important; }
 .text-muted { color: var(--text-muted) !important; }
 
+/* Payment Details Styling */
+.payment-details {
+    background: rgba(138, 43, 226, 0.1);
+    border: 1px solid var(--neon-purple);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.address-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.address-container input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--neon-purple);
+    color: var(--text-light);
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.qr-container {
+    text-align: center;
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    display: inline-block;
+}
+
+.qr-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 5px;
+}
+
+/* Plan Management Styles */
+.plan-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.plan-actions .btn {
+    padding: 5px 15px;
+    font-size: 0.8rem;
+}
+
+.user-plan-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.user-plan-badge.free {
+    background: rgba(108, 117, 125, 0.2);
+    color: #6c757d;
+    border: 1px solid #6c757d;
+}
+
+.user-plan-badge.paid {
+    background: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+    border: 1px solid #28a745;
+}
+
 /* Print Styles */
 @media print {
     .navbar,
@@ -1963,5 +2032,10 @@ h1, h2, h3, h4, h5, h6 {
     
     .main-content {
         padding-top: 0 !important;
+    }
+    
+    .address-container {
+        flex-direction: column;
+        gap: 5px;
     }
 }
